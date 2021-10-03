@@ -1,0 +1,2 @@
+UI and API protection is working as expected.
+But a new session is being created even for API calls and 'jsessionid' cookie is added to API response
