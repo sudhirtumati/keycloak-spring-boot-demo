@@ -1,0 +1,774 @@
+{
+	"info": {
+		"_postman_id": "7ba8b83d-701f-40fc-93db-91caacd16442",
+		"name": "3 - Manage user roles",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"access_token\", jsonData.access_token);\r",
+							"\r",
+							"postman.setNextRequest(\"Get realm users\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "admin-cli",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{admin_username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{admin_password}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/realms/master/protocol/openid-connect/token",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"realms",
+						"master",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get realm users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"for (index in jsonData) {\r",
+							"    if(jsonData[index].username == 'app_admin1') {\r",
+							"        pm.environment.set(\"app_admin1_id\", jsonData[index].id);\r",
+							"    } else if(jsonData[index].username == 'app_user1') {\r",
+							"        pm.environment.set(\"app_user1_id\", jsonData[index].id);\r",
+							"    } else if(jsonData[index].username == 'app_user2') {\r",
+							"        pm.environment.set(\"app_user2_id\", jsonData[index].id);\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"postman.setNextRequest(\"Get realm roles\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get realm roles",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"for (index in jsonData) {\r",
+							"    if(jsonData[index].name == 'admin') {\r",
+							"        pm.environment.set(\"admin_role_id\", jsonData[index].id);\r",
+							"    } else if(jsonData[index].name == 'user') {\r",
+							"        pm.environment.set(\"user_role_id\", jsonData[index].id);\r",
+							"    } else if(jsonData[index].name == 'uma_authorization') {\r",
+							"        pm.environment.set(\"uma_authorization_role_id\", jsonData[index].id);\r",
+							"    } else if(jsonData[index].name == 'offline_access') {\r",
+							"        pm.environment.set(\"offline_access_role_id\", jsonData[index].id);\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"postman.setNextRequest(\"Add realm admin role to 'app_admin1' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/roles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add realm admin role to 'app_admin1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Add realm user role to 'app_user1' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{admin_role_id}}\",\r\n    \"name\": \"admin\",\r\n    \"clientRole\": false\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_admin1_id}}/role-mappings/realm",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_admin1_id}}",
+						"role-mappings",
+						"realm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add realm user role to 'app_user1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Add realm user role to 'app_user2' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{user_role_id}}\",\r\n    \"name\": \"user\",\r\n    \"clientRole\": false\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user1_id}}/role-mappings/realm",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user1_id}}",
+						"role-mappings",
+						"realm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add realm user role to 'app_user2' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Get client app1 roles\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{user_role_id}}\",\r\n    \"name\": \"user\",\r\n    \"clientRole\": false\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user2_id}}/role-mappings/realm",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user2_id}}",
+						"role-mappings",
+						"realm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get client app1 roles",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"for (index in jsonData) {\r",
+							"    if(jsonData[index].name == 'client1_admin') {\r",
+							"        pm.environment.set(\"client1_admin_role_id\", jsonData[index].id);\r",
+							"    } else if(jsonData[index].name == 'client1_user') {\r",
+							"        pm.environment.set(\"client1_user_role_id\", jsonData[index].id);\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"postman.setNextRequest(\"Add client1 admin role to 'app_admin1' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/spring-boot-oauth2-thymeleaf-app/roles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"clients",
+						"spring-boot-oauth2-thymeleaf-app",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add client1 admin role to 'app_admin1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Add client1 user role to 'app_user1' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{client1_admin_role_id}}\",\r\n    \"name\": \"client1_admin\",\r\n    \"clientRole\": true\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_admin1_id}}/role-mappings/clients/spring-boot-oauth2-thymeleaf-app",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_admin1_id}}",
+						"role-mappings",
+						"clients",
+						"spring-boot-oauth2-thymeleaf-app"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add client1 user role to 'app_user1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Add client1 user role to 'app_user2' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{client1_user_role_id}}\",\r\n    \"name\": \"client1_user\",\r\n    \"clientRole\": true\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user1_id}}/role-mappings/clients/spring-boot-oauth2-thymeleaf-app",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user1_id}}",
+						"role-mappings",
+						"clients",
+						"spring-boot-oauth2-thymeleaf-app"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add client1 user role to 'app_user2' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Get client app2 roles\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{client1_user_role_id}}\",\r\n    \"name\": \"client1_user\",\r\n    \"clientRole\": true\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user2_id}}/role-mappings/clients/spring-boot-oauth2-thymeleaf-app",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user2_id}}",
+						"role-mappings",
+						"clients",
+						"spring-boot-oauth2-thymeleaf-app"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete default realm role mappings from 'app_admin1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Delete default realm role mappings from 'app_user1' user\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": \"{{uma_authorization_role_id}}\",\r\n        \"name\": \"uma_authorization\"\r\n    },\r\n    {\r\n        \"id\": \"{{offline_access_role_id}}\",\r\n        \"name\": \"offline_access\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_admin1_id}}/role-mappings/realm",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_admin1_id}}",
+						"role-mappings",
+						"realm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete default realm role mappings from 'app_user1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Delete default realm role mappings from 'app_user2' user\")"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": \"{{uma_authorization_role_id}}\",\r\n        \"name\": \"uma_authorization\"\r\n    },\r\n    {\r\n        \"id\": \"{{offline_access_role_id}}\",\r\n        \"name\": \"offline_access\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user1_id}}/role-mappings/realm",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user1_id}}",
+						"role-mappings",
+						"realm"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete default realm role mappings from 'app_user2' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[\r\n    {\r\n        \"id\": \"{{uma_authorization_role_id}}\",\r\n        \"name\": \"uma_authorization\"\r\n    },\r\n    {\r\n        \"id\": \"{{offline_access_role_id}}\",\r\n        \"name\": \"offline_access\"\r\n    }\r\n]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user2_id}}/role-mappings/realm",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user2_id}}",
+						"role-mappings",
+						"realm"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

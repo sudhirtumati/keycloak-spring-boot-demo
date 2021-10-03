@@ -1,0 +1,365 @@
+{
+	"info": {
+		"_postman_id": "6b070d2f-777a-4541-a0b7-8d50791b87a5",
+		"name": "2 - Create client app 1",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Get access token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"pm.environment.set(\"access_token\", jsonData.access_token);\r",
+							"\r",
+							"postman.setNextRequest(\"Get client scopes\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "client_id",
+							"value": "admin-cli",
+							"type": "text"
+						},
+						{
+							"key": "username",
+							"value": "{{admin_username}}",
+							"type": "text"
+						},
+						{
+							"key": "password",
+							"value": "{{admin_password}}",
+							"type": "text"
+						},
+						{
+							"key": "grant_type",
+							"value": "password",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/realms/master/protocol/openid-connect/token",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"realms",
+						"master",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get client scopes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"for (index in jsonData) {\r",
+							"    if(jsonData[index].name == 'entity-mapper') {\r",
+							"        pm.environment.set(\"entity-mapper-client-scope-id\", jsonData[index].id);\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"postman.setNextRequest(\"Create client - app1\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"entity-mapper\",\r\n    \"protocol\": \"openid-connect\",\r\n    \"attributes\": {\r\n        \"display.on.consent.screen\": false,\r\n        \"include.in.token.scope\": true\r\n    }\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/client-scopes",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"client-scopes"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create client - app1",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Add entity-mapper to default client scopes\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"baseUrl\": \"http://localhost:8080\",\r\n    \"id\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"name\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"redirectUris\": [\"http://localhost:8080/*\"],\r\n    \"rootUrl\": \"http://localhost:8080\",\r\n    \"adminUrl\": \"http://localhost:8080\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"clients"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add entity-mapper to default client scopes",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Create 'client1_admin' role\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/spring-boot-oauth2-thymeleaf-app/default-client-scopes/{{entity-mapper-client-scope-id}}",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"clients",
+						"spring-boot-oauth2-thymeleaf-app",
+						"default-client-scopes",
+						"{{entity-mapper-client-scope-id}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 'client1_admin' role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Create 'client1_user' role\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"client1-admin-role-id\",\r\n    \"name\": \"client1_admin\",\r\n    \"description\": \"Application admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/spring-boot-oauth2-thymeleaf-app/roles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"clients",
+						"spring-boot-oauth2-thymeleaf-app",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create 'client1_user' role",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 201\", function () {\r",
+							"    pm.response.to.have.status(201);\r",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"id\": \"client1-user-role-id\",\r\n    \"name\": \"client1_user\",\r\n    \"description\": \"Application user\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/spring-boot-oauth2-thymeleaf-app/roles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"clients",
+						"spring-boot-oauth2-thymeleaf-app",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
