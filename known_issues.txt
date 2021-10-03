@@ -1,0 +1,1 @@
+UI protection is working fine but APIs are no longer protected

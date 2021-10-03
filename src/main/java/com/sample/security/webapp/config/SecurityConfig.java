@@ -17,14 +17,13 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.authority.mapping.SimpleAuthorityMapper;
 import org.springframework.security.web.authentication.session.NullAuthenticatedSessionStrategy;
 import org.springframework.security.web.authentication.session.SessionAuthenticationStrategy;
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 @Slf4j
 @KeycloakConfiguration
 public class SecurityConfig {
 
     @Configuration
-    @Order(1)
+    @Order(2)
     public static class ApiSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
         @Autowired
@@ -37,23 +36,23 @@ public class SecurityConfig {
         @Override
         public void configure(WebSecurity web) throws Exception {
             web.ignoring()
-                    .antMatchers("/actuator")
-                    .antMatchers("/actuator/health")
-                    .antMatchers("/actuator/health/**")
-                    .antMatchers("/actuator/info")
-                    .antMatchers("/actuator/prometheus");
+                    .antMatchers("/api/manage")
+                    .antMatchers("/api/manage/health")
+                    .antMatchers("/api/manage/health/**")
+                    .antMatchers("/api/manage/info")
+                    .antMatchers("/api/manage/prometheus");
         }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            super.configure(http);
+            //super.configure(http);
             http
-                    .csrf()
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
-                    .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                    .antMatcher("/api/**")
+                    .csrf().disable()
+                    .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and().exceptionHandling()
                     .and().authorizeRequests()
-                    .antMatchers("/actuator/**").hasRole("client1_admin");
+                    .antMatchers("/api/manage/**").hasRole("client1_admin");
         }
 
         @Override
@@ -63,7 +62,7 @@ public class SecurityConfig {
     }
 
     @Configuration
-    @Order(2)
+    @Order(1)
     public static class AppSecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
 
         @Autowired
@@ -78,7 +77,6 @@ public class SecurityConfig {
             super.configure(http);
             http
                     .csrf()
-                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                     .and().exceptionHandling()
                     .and().authorizeRequests()
                     .antMatchers("/me").hasAnyRole("client1_admin", "client1_user");

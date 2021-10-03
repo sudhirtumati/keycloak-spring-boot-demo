@@ -23,6 +23,7 @@ keycloak:
 management:
   endpoints:
     web:
+      base-path: /api/manage
       exposure:
         include: "*"
 
