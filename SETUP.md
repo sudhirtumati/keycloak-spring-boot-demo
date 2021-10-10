@@ -1,5 +1,8 @@
 # Setup
 
+## Overview
+![Overview](https://i.ibb.co/jTTRNkQ/keycloak-sample-setup.png)
+
 ## Keycloak
 
 * Download [Keycloak zip](https://www.keycloak.org/downloads) and unzip it
