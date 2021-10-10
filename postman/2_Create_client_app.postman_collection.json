@@ -168,7 +168,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"baseUrl\": \"http://localhost:8080\",\r\n    \"id\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"name\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"redirectUris\": [\"http://localhost:8080/*\"],\r\n    \"rootUrl\": \"http://localhost:8080\",\r\n    \"adminUrl\": \"http://localhost:8080\"\r\n}",
+					"raw": "{\r\n    \"baseUrl\": \"http://localhost:8080\",\r\n    \"id\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"name\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"redirectUris\": [\"http://localhost:8080/*\"],\r\n    \"rootUrl\": \"http://localhost:8080\",\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"

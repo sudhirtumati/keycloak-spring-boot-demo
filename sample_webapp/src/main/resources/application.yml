@@ -1,0 +1,29 @@
+keycloak:
+  auth-server-url: http://localhost:9090/auth
+  realm: oauth2-demo
+  resource: spring-boot-oauth2-thymeleaf-app
+  use-resource-role-mappings: true
+  credentials:
+    secret: <replace_with_actual_value>
+
+spring:
+  datasource:
+    url: <replace_with_actual_value>
+    username: <replace_with_actual_value>
+    password: <replace_with_actual_value>
+    hikari:
+      maximum-pool-size: 2
+  session:
+    store-type: jdbc
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+logging:
+  level:
+    org.springframework.security: INFO
+    org.keycloak: INFO
+    org.springframework.session.jdbc: INFO

@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: load-balancer
+  cloud:
+    loadbalancer:
+      ribbon:
+        enabled: false
+    gateway:
+      routes:
+      - id: instance1
+        uri: http://localhost:8090/
+        predicates:
+        - Path=/**
+        - Weight=group1, 5
+        filters:
+          - PreserveHostHeader
+      - id: instance2
+        uri: http://localhost:8091/
+        predicates:
+        - Path=/**
+        - Weight=group1, 5
+        filters:
+          - PreserveHostHeader
+
+server:
+  port: 8080
