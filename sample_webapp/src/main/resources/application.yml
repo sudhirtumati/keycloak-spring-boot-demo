@@ -4,13 +4,13 @@ keycloak:
   resource: spring-boot-oauth2-thymeleaf-app
   use-resource-role-mappings: true
   credentials:
-    secret: <replace_with_actual_value>
+    secret: <replace_this>
 
 spring:
   datasource:
-    url: <replace_with_actual_value>
-    username: <replace_with_actual_value>
-    password: <replace_with_actual_value>
+    url: <replace_this>
+    username: <replace_this>
+    password: <replace_this>
     hikari:
       maximum-pool-size: 2
   session:

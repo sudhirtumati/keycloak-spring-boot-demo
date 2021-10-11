@@ -1,17 +1,13 @@
-package com.samples.keycloak.webapp.config;
+package com.samples.keycloak.api.config;
 
 import lombok.extern.slf4j.Slf4j;
 import org.keycloak.adapters.KeycloakConfigResolver;
 import org.keycloak.adapters.springboot.KeycloakSpringBootConfigResolver;
 import org.keycloak.adapters.springsecurity.KeycloakConfiguration;
 import org.keycloak.adapters.springsecurity.authentication.KeycloakAuthenticationProvider;
-import org.keycloak.adapters.springsecurity.client.KeycloakClientRequestFactory;
-import org.keycloak.adapters.springsecurity.client.KeycloakRestTemplate;
 import org.keycloak.adapters.springsecurity.config.KeycloakWebSecurityConfigurerAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -25,9 +21,6 @@ import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 @KeycloakConfiguration
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
 public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
-
-    @Autowired
-    public KeycloakClientRequestFactory keycloakClientRequestFactory;
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder auth) {
@@ -52,8 +45,7 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
                 .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
                 .and().exceptionHandling()
                 .and().authorizeRequests()
-                .antMatchers("/actuator/**").hasRole("client1_admin")
-                .antMatchers("/me").hasAnyRole("client1_admin", "client1_user");
+                .antMatchers("/actuator/**").hasRole("client2_admin");
     }
 
     @Override
@@ -65,11 +57,4 @@ public class SecurityConfig extends KeycloakWebSecurityConfigurerAdapter {
     public KeycloakConfigResolver keycloakConfigResolver() {
         return new KeycloakSpringBootConfigResolver();
     }
-
-    @Bean
-    @Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
-    public KeycloakRestTemplate keycloakRestTemplate() {
-        return new KeycloakRestTemplate(keycloakClientRequestFactory);
-    }
-
 }

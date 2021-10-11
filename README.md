@@ -6,4 +6,4 @@
 
 ## Reset Keycloak
 After testing, if you wish to delete Keycloak realm, execute below postman collection
-* Delete realm - Run [Reset](postman/4_Reset.postman_collection.json) postman collection
+* Delete realm - Run [Reset](postman/5_Reset.postman_collection.json) postman collection

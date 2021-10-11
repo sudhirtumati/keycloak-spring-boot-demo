@@ -7,7 +7,7 @@ To test the behind a proxy with multiple instances running
 * Web application instance 2 port: 8091
 
 ## Start 2 instances of web application
-Start first instance with port 8090
+Navigate to `sample_webapp` folder and start first instance with port 8090
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8090 --keycloak.credentials.secret=<keycloak_client_secret>"
 ```
@@ -19,8 +19,14 @@ mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8091 --keycloak.c
 
 **Note:** Make sure both instances are up and running before starting the load balancer
 
+## Start 1 instance of api application
+Navigate to `sample-api` folder and start application with port 9000
+```
+mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=9000"
+```
+
 ## Start load balancer
-* Navigate to [http_load_balancer]() folder in terminal and start application with below command
+* Navigate to `http_load_balancer` folder in terminal and start application with below command
 ```
 mvn spring-boot:run -Dspring-boot.run.arguments="--server.port=8080"
 ```

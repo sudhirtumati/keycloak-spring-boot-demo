@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "7ba8b83d-701f-40fc-93db-91caacd16442",
-		"name": "3 - Manage user roles",
+		"name": "4_Manage_user_roles",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -550,7 +550,7 @@
 							"    pm.response.to.have.status(204);\r",
 							"});\r",
 							"\r",
-							"postman.setNextRequest(\"Get client app2 roles\");"
+							"postman.setNextRequest(\"Get order-api roles\");"
 						],
 						"type": "text/javascript"
 					}
@@ -593,6 +593,241 @@
 						"role-mappings",
 						"clients",
 						"spring-boot-oauth2-thymeleaf-app"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get order-api roles",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"    pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"var jsonData = pm.response.json();\r",
+							"\r",
+							"for (index in jsonData) {\r",
+							"    if(jsonData[index].name == 'order-api-admin') {\r",
+							"        pm.environment.set(\"order-api-admin_role_id\", jsonData[index].id);\r",
+							"    } else if(jsonData[index].name == 'order-api-user') {\r",
+							"        pm.environment.set(\"order-api-user_role_id\", jsonData[index].id);\r",
+							"    }\r",
+							"}\r",
+							"\r",
+							"postman.setNextRequest(\"Add order-api-admin role to 'app_admin1' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/order-api/roles",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"clients",
+						"order-api",
+						"roles"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add order-api-admin role to 'app_admin1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Add order-api-user role to 'app_user1' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{order-api-admin_role_id}}\",\r\n    \"name\": \"order-api-admin\",\r\n    \"clientRole\": true\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_admin1_id}}/role-mappings/clients/order-api",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_admin1_id}}",
+						"role-mappings",
+						"clients",
+						"order-api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add order-api-user role to 'app_user1' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Add order-api-user role to 'app_user2' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{order-api-user_role_id}}\",\r\n    \"name\": \"order-api-user\",\r\n    \"clientRole\": true\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user1_id}}/role-mappings/clients/order-api",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user1_id}}",
+						"role-mappings",
+						"clients",
+						"order-api"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Add order-api-user role to 'app_user2' user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"    pm.response.to.have.status(204);\r",
+							"});\r",
+							"\r",
+							"postman.setNextRequest(\"Delete default realm role mappings from 'app_admin1' user\");"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{access_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "[{\r\n    \"id\": \"{{order-api-user_role_id}}\",\r\n    \"name\": \"order-api-user\",\r\n    \"clientRole\": true\r\n}]",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/users/{{app_user2_id}}/role-mappings/clients/order-api",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"auth",
+						"admin",
+						"realms",
+						"{{realm_name}}",
+						"users",
+						"{{app_user2_id}}",
+						"role-mappings",
+						"clients",
+						"order-api"
 					]
 				}
 			},

@@ -1,7 +1,7 @@
 {
 	"info": {
-		"_postman_id": "6b070d2f-777a-4541-a0b7-8d50791b87a5",
-		"name": "2_Create_client_app",
+		"_postman_id": "e7d35193-8da6-4e7a-ba3c-b6b5d4614368",
+		"name": "3_Create_order-api_app",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -89,7 +89,7 @@
 							"    }\r",
 							"}\r",
 							"\r",
-							"postman.setNextRequest(\"Create client - app1\");"
+							"postman.setNextRequest(\"Create client - order-api\");"
 						],
 						"type": "text/javascript"
 					}
@@ -137,7 +137,7 @@
 			"response": []
 		},
 		{
-			"name": "Create client - app1",
+			"name": "Create client - order-api",
 			"event": [
 				{
 					"listen": "test",
@@ -168,7 +168,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"baseUrl\": \"http://localhost:8080\",\r\n    \"id\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"name\": \"spring-boot-oauth2-thymeleaf-app\",\r\n    \"redirectUris\": [\"http://localhost:8080/*\"],\r\n    \"rootUrl\": \"http://localhost:8080\",\r\n    \"adminUrl\": \"http://localhost:8080\"\r\n}",
+					"raw": "{\r\n    \"id\": \"order-api\",\r\n    \"name\": \"order-api\",\r\n    \"adminUrl\": \"http://localhost:9000\",\r\n    \"bearerOnly\": true\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -202,7 +202,7 @@
 							"    pm.response.to.have.status(204);\r",
 							"});\r",
 							"\r",
-							"postman.setNextRequest(\"Create 'client1_admin' role\");"
+							"postman.setNextRequest(\"Create 'order-api-admin' role\");"
 						],
 						"type": "text/javascript"
 					}
@@ -231,7 +231,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/spring-boot-oauth2-thymeleaf-app/default-client-scopes/{{entity-mapper-client-scope-id}}",
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/order-api/default-client-scopes/{{entity-mapper-client-scope-id}}",
 					"host": [
 						"{{base_url}}"
 					],
@@ -241,7 +241,7 @@
 						"realms",
 						"{{realm_name}}",
 						"clients",
-						"spring-boot-oauth2-thymeleaf-app",
+						"order-api",
 						"default-client-scopes",
 						"{{entity-mapper-client-scope-id}}"
 					]
@@ -250,7 +250,7 @@
 			"response": []
 		},
 		{
-			"name": "Create 'client1_admin' role",
+			"name": "Create 'order-api-admin' role",
 			"event": [
 				{
 					"listen": "test",
@@ -260,7 +260,7 @@
 							"    pm.response.to.have.status(201);\r",
 							"});\r",
 							"\r",
-							"postman.setNextRequest(\"Create 'client1_user' role\");"
+							"postman.setNextRequest(\"Create 'order-api-user' role\");"
 						],
 						"type": "text/javascript"
 					}
@@ -281,7 +281,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"client1-admin-role-id\",\r\n    \"name\": \"client1_admin\",\r\n    \"description\": \"Application admin\"\r\n}",
+					"raw": "{\r\n    \"id\": \"order-api-admin-role-id\",\r\n    \"name\": \"order-api-admin\",\r\n    \"description\": \"Application admin\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -289,7 +289,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/spring-boot-oauth2-thymeleaf-app/roles",
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/order-api/roles",
 					"host": [
 						"{{base_url}}"
 					],
@@ -299,7 +299,7 @@
 						"realms",
 						"{{realm_name}}",
 						"clients",
-						"spring-boot-oauth2-thymeleaf-app",
+						"order-api",
 						"roles"
 					]
 				}
@@ -307,7 +307,7 @@
 			"response": []
 		},
 		{
-			"name": "Create 'client1_user' role",
+			"name": "Create 'order-api-user' role",
 			"event": [
 				{
 					"listen": "test",
@@ -336,7 +336,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"client1-user-role-id\",\r\n    \"name\": \"client1_user\",\r\n    \"description\": \"Application user\"\r\n}",
+					"raw": "{\r\n    \"id\": \"order-api-user-role-id\",\r\n    \"name\": \"order-api-user\",\r\n    \"description\": \"Application user\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -344,7 +344,7 @@
 					}
 				},
 				"url": {
-					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/spring-boot-oauth2-thymeleaf-app/roles",
+					"raw": "{{base_url}}/auth/admin/realms/{{realm_name}}/clients/order-api/roles",
 					"host": [
 						"{{base_url}}"
 					],
@@ -354,7 +354,7 @@
 						"realms",
 						"{{realm_name}}",
 						"clients",
-						"spring-boot-oauth2-thymeleaf-app",
+						"order-api",
 						"roles"
 					]
 				}

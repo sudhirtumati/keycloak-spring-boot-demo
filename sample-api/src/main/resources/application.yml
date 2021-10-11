@@ -1,0 +1,8 @@
+keycloak:
+  auth-server-url: http://localhost:9090/auth
+  realm: oauth2-demo
+  resource: order-api
+  bearer-only: true
+  use-resource-role-mappings: true
+  credentials:
+    secret: <replace_this>

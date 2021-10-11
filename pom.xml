@@ -26,7 +26,8 @@
 	<modules>
 		<module>http_load_balancer</module>
 		<module>sample_webapp</module>
-	</modules>
+        <module>sample-api</module>
+    </modules>
 
 	<dependencyManagement>
 		<dependencies>
