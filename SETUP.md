@@ -41,3 +41,7 @@ is used with PostgreSQL database (or any other database of your choice).
   * spring.datasource.url
   * spring.datasource.username
   * spring.datasource.password
+
+## Reset Keycloak data
+After testing, if you wish to delete Keycloak realm, execute below postman collection
+* Delete realm - Run [Reset](postman/5_Reset.postman_collection.json) postman collection
