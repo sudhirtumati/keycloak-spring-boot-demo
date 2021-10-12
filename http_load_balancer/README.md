@@ -1,10 +1,11 @@
 # Load balancing
-To test the behind a proxy with multiple instances running
+To test the web application behavior behind a proxy with multiple instances running
 
 ## Ports
 * Load balancer port: 8080
 * Web application instance 1 port: 8090
 * Web application instance 2 port: 8091
+* Api microservice port: 9000
 
 ## Start 2 instances of web application
 Navigate to `sample_webapp` folder and start first instance with port 8090
