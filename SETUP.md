@@ -23,8 +23,10 @@
     * Open [http://localhost:9090](http://localhost:9090)
     * Login with admin credentials created during Keycloak installation
 * Switch realm to *Oauth2-demo*
+* Select client app
 * Go to *Credentials* tab
 * Click on *Regenerate Secret*
+* Repeat above steps for all client apps
 
 **Note:**  Secret can be provided to the application either as an environment variable or as command line parameter. In
 this example, all secrets are provided to application as environment variables
